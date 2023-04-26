@@ -1,0 +1,47 @@
+---
+title: "complaining DAG"
+format: html
+editor: visual
+---
+
+## Complaint Process DAG
+
+**Inciting incident**
+
+-   financial institution errors
+-   life events
+-   financial mismanagement
+-   third parties (fraud, financial abuse, merchant stuff)
+
+**Company behavior**
+
+-   customer service
+-   resolution direction (relief or no relief)
+-   appropriateness of resolution (consumer is defrauded of a large sum, but only gets overdraft refunded)
+-   quality of communication
+-   non-customer service delays
+
+**Consumer motivations to complaint**
+
+-   monetary stakes
+-   other stakes
+-   voice (want to change the companies policy)
+    -   revenge - want to damage the company
+    -   justice - want the company to do the right thing
+-   control information collection/sharing/use
+
+**Consumer search**
+
+-   internet search
+-   social search
+-   IRL social
+-   Complain receiving organization marketing
+-   other third party marketing
+
+**Consumer assess fit**
+
+-   
+
+```{r}
+
+```
