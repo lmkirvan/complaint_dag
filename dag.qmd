@@ -1,5 +1,5 @@
 ---
-title: "complaining DAG"
+title: "complaints DAG"
 format: html
 editor: visual
 ---
@@ -20,28 +20,88 @@ editor: visual
 -   appropriateness of resolution (consumer is defrauded of a large sum, but only gets overdraft refunded)
 -   quality of communication
 -   non-customer service delays
+-   company behavior is impacted by regulations
 
 **Consumer motivations to complaint**
 
 -   monetary stakes
--   other stakes
+-   other stakes (stay in home)
 -   voice (want to change the companies policy)
     -   revenge - want to damage the company
     -   justice - want the company to do the right thing
 -   control information collection/sharing/use
+    -   consumer wants to control data and use of data
+-   consumer understanding of legal rights
+-   past experience complaining
 
 **Consumer search**
 
 -   internet search
 -   social search
--   IRL social
--   Complain receiving organization marketing
--   other third party marketing
+-   IRL social interaction
+-   CFPB marketing
+-   third parties and third party marketing (Credit repair, lawyer, etc)
 
-**Consumer assess fit**
+Consumer then weighs one or more options and determines which one fits with motivation.
 
--   
+**Barriers to submission**
+
+-   language
+    -   comprehension
+    -   fluency
+-   time burden
+-   context (landing pages, explanation)
+
+Can we write down a dag for this?
 
 ```{r}
+
+
+library(ggdag)
+library(ggplot2)
+theme_set(theme_dag())
+
+complaining_dag <- dagify(
+  complaint_submission ~ problem_resolution
+  , problem_resolution ~ problem
+  , problem ~ financial_situation
+  , problem ~ bank_error
+  , problem ~ third_party
+  , problem ~ events 
+  , financial_situation ~ ~ bank_error 
+  , problem_resolution ~ financial_situation + third_party + persistance
+  , financial_situation ~ events
+  , persistance ~ events
+  , persistance ~ stakes 
+  , stakes ~ financial_situation
+  , stakes ~ events
+  , labels = c(
+    "complaint_submission" = "Submission of complaint"
+    , "financial_situation" = "Financial Situation"
+    , "problem" = "Problem to complaint about"
+    , "third_party" = "Third Party Actions"
+    , "events" = "Unfortunate Events"
+    , "problem_resolution" = "FI Resolution"
+    , "persistance" = "Persistance/self-efficacy"
+    , "stakes" = "Stakes"
+    , "bank_error" = "Bank Error"
+    )
+)
+
+ggdag(complaining_dag, text = FALSE, use_labels = "label")
+
+```
+
+Build can we do some simulated data too
+
+```{r}
+
+# this is right? or is it 
+rbern <- \(n,p)(runif(n) > p)
+
+complaints <- rbern(1000, .5)
+
+
+
 
 ```
