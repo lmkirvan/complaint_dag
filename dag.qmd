@@ -56,35 +56,36 @@ Can we write down a dag for this?
 
 ```{r}
 
-
 library(ggdag)
 library(ggplot2)
 theme_set(theme_dag())
 
 complaining_dag <- dagify(
-  complaint_submission ~ problem_resolution
-  , problem_resolution ~ problem
-  , problem ~ financial_situation
-  , problem ~ bank_error
-  , problem ~ third_party
-  , problem ~ events 
-  , financial_situation ~ ~ bank_error 
-  , problem_resolution ~ financial_situation + third_party + persistance
-  , financial_situation ~ events
-  , persistance ~ events
-  , persistance ~ stakes 
+  complaint_submission ~ search_mediators
+  , search_mediators ~ 
+    problem_resolution +
+    persistance 
+  , problem ~ financial_situation + bank_error + third_party + events 
+  , problem_resolution ~ financial_situation + third_party + persistance + legal_framework
+  , legal_framework ~ problem
+  , financial_situation ~ events + bank_error + U 
   , stakes ~ financial_situation
-  , stakes ~ events
+  , persistance ~ stakes 
+  , problem_resolution ~ stakes 
+  , events ~ third_party
   , labels = c(
     "complaint_submission" = "Submission of complaint"
     , "financial_situation" = "Financial Situation"
-    , "problem" = "Problem to complaint about"
-    , "third_party" = "Third Party Actions"
+    , "problem" = "Problem to solve"
+    , "third_party" = "Third Party Causes"
     , "events" = "Unfortunate Events"
     , "problem_resolution" = "FI Resolution"
     , "persistance" = "Persistance/self-efficacy"
-    , "stakes" = "Stakes"
     , "bank_error" = "Bank Error"
+    , "search_mediators" = "Search process"
+    , "legal_framework" = "Legal Framework"
+    , "stakes" = "Consumer Stakes"
+    , "U" = "losts of unkown stuff"
     )
 )
 
