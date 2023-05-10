@@ -93,16 +93,4 @@ ggdag(complaining_dag, text = FALSE, use_labels = "label")
 
 ```
 
-Build can we do some simulated data too
-
-```{r}
-
-# this is right? or is it 
-rbern <- \(n,p)(runif(n) > p)
-
-complaints <- rbern(1000, .5)
-
-
-
-
-```
+How can we simulate this? Do we need to something agent based? (That seems really hard.) Maybe ask travis/rebecca if they have any familiarity. Maybe some of the econ people do stuff like that?
