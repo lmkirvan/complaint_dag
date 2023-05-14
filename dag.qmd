@@ -60,13 +60,30 @@ library(ggdag)
 library(ggplot2)
 theme_set(theme_dag())
 
+
+
+coords <- tibble::tribble(
+  ~name,  ~x,  ~y
+  , "U",  1,   3  
+  , "bank_error", 2, 3
+  , "events", 2, 2
+  , "third_party", 2, 4 
+  , "legal_framework", 4, 3
+  , "problem_resolution", 5, 3
+  , "search_mediators",  6, 3
+  , "complaint_submission", 7, 3
+  , "persistance", 3, 5
+  , "financial_situation", 2, 4
+  , "stakes", 3, 4
+  , "problem", 3, 3
+)
+
 complaining_dag <- dagify(
   complaint_submission ~ search_mediators
-  , search_mediators ~ 
-    problem_resolution +
-    persistance 
+  , search_mediators ~  problem_resolution + persistance 
   , problem ~ financial_situation + bank_error + third_party + events 
-  , problem_resolution ~ financial_situation + third_party + persistance + legal_framework
+  , problem_resolution ~ financial_situation + third_party + 
+    persistance + legal_framework
   , legal_framework ~ problem
   , financial_situation ~ events + bank_error + U 
   , stakes ~ financial_situation
@@ -81,12 +98,13 @@ complaining_dag <- dagify(
     , "events" = "Unfortunate Events"
     , "problem_resolution" = "FI Resolution"
     , "persistance" = "Persistance/self-efficacy"
-    , "bank_error" = "Bank Error"
+    , "bank_error" = "FI Error"
     , "search_mediators" = "Search process"
     , "legal_framework" = "Legal Framework"
     , "stakes" = "Consumer Stakes"
-    , "U" = "losts of unkown stuff"
+    , "U" = "U"
     )
+  , coords = coords
 )
 
 ggdag(complaining_dag, text = FALSE, use_labels = "label")
@@ -94,3 +112,6 @@ ggdag(complaining_dag, text = FALSE, use_labels = "label")
 ```
 
 How can we simulate this? Do we need to something agent based? (That seems really hard.) Maybe ask travis/rebecca if they have any familiarity. Maybe some of the econ people do stuff like that?
+
+
+
