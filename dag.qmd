@@ -56,7 +56,6 @@ Can we write down a dag for this?
 
 ```{r}
 
-
 library(ggdag)
 library(ggplot2)
 theme_set(theme_dag())
