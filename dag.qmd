@@ -1,10 +1,140 @@
 ---
 title: "complaints DAG"
-format: html
+format: 
+  html:
+    embed-resources: true
 editor: visual
 ---
 
 ## Complaint Process DAG
+
+Can we write down a dag for the stuff leading up to a complaint?
+
+```{r packages}
+#| echo: false
+#| warning: false
+
+
+library(ggdag)
+library(ggplot2)
+theme_set(theme_dag())
+
+```
+
+```{r dag_set}
+#| code-fold: true
+
+coords <- tibble::tribble(
+  ~name,  ~x,  ~y
+  , "bank_error", 1, 3
+  , "events", 1, 1
+  , "third_party", 3, 1 
+  , "financial_situation", 1, 2
+  , "problem", 3, 1.5
+  , "persistance", 5, 3
+  , "stakes", 3, 3
+  , "legal_framework", 3, 2.3
+  , "problem_resolution", 5, 2
+  , "search_mediators",  6, 2
+  , "complaint_submission", 7, 2
+)
+
+complaining_dag <- dagify(
+  complaint_submission ~ search_mediators
+  , search_mediators ~  problem_resolution + persistance + third_party
+  , problem ~ financial_situation + bank_error + third_party + events 
+  , problem_resolution ~ financial_situation + third_party + 
+    persistance + legal_framework
+  , legal_framework ~ problem
+  , financial_situation ~ events + bank_error 
+  , stakes ~ financial_situation
+  , persistance ~ stakes + legal_framework
+  , problem_resolution ~ stakes 
+  , events ~ third_party
+  , labels = c(
+    "complaint_submission" = "Submission of complaint"
+    , "financial_situation" = "Financial Situation"
+    , "problem" = "Problem to solve"
+    , "third_party" = "Third Party Causes"
+    , "events" = "Unfortunate Events"
+    , "problem_resolution" = "FI Resolution"
+    , "persistance" = "Persistance/self-efficacy"
+    , "bank_error" = "FI Error"
+    , "search_mediators" = "Search process"
+    , "legal_framework" = "Legal Framework"
+    , "stakes" = "Consumer Stakes"
+    )
+  , coords = coords
+  , latent = c("persistance")
+)
+
+  
+
+```
+
+```{r}
+#| code-fold: true
+#| column: screen
+#| out-width: 80%
+#| fig-format: svg
+#| fig-align: center
+
+ggdag(complaining_dag, text = FALSE, use_labels = "label", text_size = 3) 
+
+
+```
+
+## Define the nodes
+
+FI Error
+
+:   The financial institution causes a problem for the consumer.
+
+    **Example:** Mortgage servicing transfer
+
+Financial Situation
+
+:   The consumers financial health. Can be a direct cause of problems through financial mismanagement.
+
+    **DATA:** fico score, or financial wellbeing score
+
+Unfortunate events
+
+:   Bad stuff that happens to people. Divorce, death, job loss
+
+Third party causes
+
+:   Merchant issues, criminal fraud, other financial institutions. A common example a furnisher can cause you to try to solve a problem with a Credit Reporting Company.
+
+Problem to solve
+
+:   The consumer is trying to fix a specific thing.
+
+Legal Framework
+
+:   Your problem has a relationship to legal procedures and rights. Even if that relationship is, you don't have any rights.
+
+Consumer Stakes
+
+:   Not sure if this node is needed. Basically this is a weigh capture that the likely consequences on the consumer will change their behavior.
+
+FI resolution
+
+:   If the FI resolves the consumer's problem in a satisfactory way then probably you won't get a complaint.
+
+Peristance/self-efficacy
+
+:   This is intended to capture psychological factors that may cause someone to pursue a problem. This is oversimplified. Other stuff probably plays in here, like sense of justice, trust in the FI, trust in government. Given that last factor, arguably their a two psychological states, one when complaining to the FI and one when complaining to us.
+
+Search process
+
+:   This is captures difficulties in finding the correct person to complaint to. For the sake of this simple exercise I'm including the stuff that happens once the consumer lands on our submission form. If the consumer abandons their complaint, it's summarized here, although conceptually it might make more sense to break it out.
+
+## Data Simulation
+
+Is it worth trying to simulate some data from this process. There is a lot going on. Maybe starting with a stripped down version of the "main path" from financial situation, through legal framework, FI resolution, search and then submission?
+
+### Notes
 
 **Inciting incident**
 
@@ -54,67 +184,3 @@ Consumer then weighs one or more options and determines which one fits with moti
     -   fluency
 -   time burden
 -   context (landing pages, explanation)
-
-Can we write down a dag for this?
-
-```{r}
-
-library(ggdag)
-library(ggplot2)
-theme_set(theme_dag())
-
-
-
-coords <- tibble::tribble(
-  ~name,  ~x,  ~y
-  , "U",  1,   3  
-  , "bank_error", 2, 3
-  , "events", 2, 2
-  , "third_party", 2, 4 
-  , "legal_framework", 4, 3
-  , "problem_resolution", 5, 3
-  , "search_mediators",  6, 3
-  , "complaint_submission", 7, 3
-  , "persistance", 3, 5
-  , "financial_situation", 2, 4
-  , "stakes", 3, 4
-  , "problem", 3, 3
-)
-
-complaining_dag <- dagify(
-  complaint_submission ~ search_mediators
-  , search_mediators ~  problem_resolution + persistance 
-  , problem ~ financial_situation + bank_error + third_party + events 
-  , problem_resolution ~ financial_situation + third_party + 
-    persistance + legal_framework
-  , legal_framework ~ problem
-  , financial_situation ~ events + bank_error + U 
-  , stakes ~ financial_situation
-  , persistance ~ stakes + legal_framework
-  , problem_resolution ~ stakes 
-  , events ~ third_party
-  , labels = c(
-    "complaint_submission" = "Submission of complaint"
-    , "financial_situation" = "Financial Situation"
-    , "problem" = "Problem to solve"
-    , "third_party" = "Third Party Causes"
-    , "events" = "Unfortunate Events"
-    , "problem_resolution" = "FI Resolution"
-    , "persistance" = "Persistance/self-efficacy"
-    , "bank_error" = "FI Error"
-    , "search_mediators" = "Search process"
-    , "legal_framework" = "Legal Framework"
-    , "stakes" = "Consumer Stakes"
-    , "U" = "U"
-    )
-  , coords = coords
-)
-
-ggdag(complaining_dag, text = FALSE, use_labels = "label")
-
-```
-
-How can we simulate this? Do we need to something agent based? (That seems really hard.) Maybe ask travis/rebecca if they have any familiarity. Maybe some of the econ people do stuff like that?
-
-
-
