@@ -33,6 +33,9 @@ editor: visual
     -   consumer wants to control data and use of data
 -   consumer understanding of legal rights
 -   past experience complaining
+-   perceived likelihood of success? (Self efficacy?)
+
+How does this manifest though? All of these things contribute to some concept like "persistence"
 
 **Consumer search**
 
@@ -70,7 +73,7 @@ complaining_dag <- dagify(
   , legal_framework ~ problem
   , financial_situation ~ events + bank_error + U 
   , stakes ~ financial_situation
-  , persistance ~ stakes 
+  , persistance ~ stakes + legal_framework
   , problem_resolution ~ stakes 
   , events ~ third_party
   , labels = c(
