@@ -28,15 +28,18 @@ coords <- tibble::tribble(
   ~name,  ~x,  ~y
   , "bank_error", 1, 3
   , "events", 1, 1
-  , "third_party", 3, 1 
   , "financial_situation", 1, 2
-  , "problem", 3, 1.5
-  , "persistance", 5, 3
-  , "stakes", 3, 3
-  , "legal_framework", 3, 2.3
-  , "problem_resolution", 5, 2
-  , "search_mediators",  6, 2
-  , "complaint_submission", 7, 2
+  , "financial_communication", 1, 2.3
+  , "problem", 2, 2
+  , "stakes", 2, 3
+  , "legal_framework", 2, 2.33
+  , "third_party", 2, 1 
+  , "problem_resolution", 4, 2
+  , "persistance", 4, 3
+  , "intermediaries", 4, 1
+  , "intermediaries_framework", 4, 1.3
+  , "search_mediators",  5, 2
+  , "complaint_submission", 6, 2
 )
 
 complaining_dag <- dagify(
@@ -44,7 +47,9 @@ complaining_dag <- dagify(
   , search_mediators ~  problem_resolution + persistance + third_party
   , problem ~ financial_situation + bank_error + third_party + events 
   , problem_resolution ~ financial_situation + third_party + 
-    persistance + legal_framework
+    persistance + legal_framework + intermediaries_framework
+  , intermediaries_framework ~ intermediaries
+  , intermediaries ~ problem
   , legal_framework ~ problem
   , financial_situation ~ events + bank_error 
   , stakes ~ financial_situation
@@ -63,12 +68,12 @@ complaining_dag <- dagify(
     , "search_mediators" = "Search process"
     , "legal_framework" = "Legal Framework"
     , "stakes" = "Consumer Stakes"
+    , "intermediaries" = "Intermediaries"
+    , "intermediaries_framework" = "Intermediaries Framework"
     )
   , coords = coords
   , latent = c("persistance")
 )
-
-  
 
 ```
 
@@ -108,7 +113,7 @@ Third party causes
 
 Problem to solve
 
-:   The consumer is trying to fix a specific thing.
+:   The consumer is trying to fix a specific thing. Lots of different examples-- fees, confusion, data stuff, problems making payments, problems with specific transactions
 
 Legal Framework
 
