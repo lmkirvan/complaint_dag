@@ -27,34 +27,32 @@ theme_set(theme_dag())
 coords <- tibble::tribble(
   ~name,  ~x,  ~y
   , "bank_error", 1, 3
-  , "events", 1, 1
-  , "financial_situation", 1, 2
-  , "financial_communication", 1, 2.3
+  , "events", 1, 1.6
+  , "financial_situation", 1, 2.4
+  , "financial_communication", 1, 1
   , "problem", 2, 2
   , "stakes", 2, 3
-  , "legal_framework", 2, 2.33
+  , "legal_framework", 2, 3
   , "third_party", 2, 1 
-  , "problem_resolution", 4, 2
-  , "persistance", 4, 3
-  , "intermediaries", 4, 1
-  , "intermediaries_framework", 4, 1.3
-  , "search_mediators",  5, 2
-  , "complaint_submission", 6, 2
+  , "problem_resolution", 3, 2
+  , "persistance", 3, 3
+  , "intermediaries", 3, 1 
+  , "intermediaries_framework", 3, 1.5
+  , "search_mediators",  4, 2
+  , "complaint_submission", 5, 2
 )
 
 complaining_dag <- dagify(
   complaint_submission ~ search_mediators
-  , search_mediators ~  problem_resolution + persistance + third_party
-  , problem ~ financial_situation + bank_error + third_party + events 
+  , search_mediators ~  problem_resolution + persistance + intermediaries
+  , problem ~ financial_situation + bank_error + third_party + events + financial_communication
   , problem_resolution ~ financial_situation + third_party + 
     persistance + legal_framework + intermediaries_framework
   , intermediaries_framework ~ intermediaries
   , intermediaries ~ problem
   , legal_framework ~ problem
   , financial_situation ~ events + bank_error 
-  , stakes ~ financial_situation
-  , persistance ~ stakes + legal_framework
-  , problem_resolution ~ stakes 
+  , persistance ~ legal_framework + financial_situation
   , events ~ third_party
   , labels = c(
     "complaint_submission" = "Submission of complaint"
@@ -70,6 +68,7 @@ complaining_dag <- dagify(
     , "stakes" = "Consumer Stakes"
     , "intermediaries" = "Intermediaries"
     , "intermediaries_framework" = "Intermediaries Framework"
+    , "financial_communication" = "Financial Communication"
     )
   , coords = coords
   , latent = c("persistance")
