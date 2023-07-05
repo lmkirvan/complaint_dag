@@ -6,28 +6,56 @@ format:
 editor: visual
 ---
 
-## Complaint Process DAG
-
-This is a DAG (Directed Acyclic Graph), of the complaint process. An arrow indicates the direction of causation. Each circle (node) is a potential cause.
-
-1\) Develop a common understanding of, and language for the complaint process
-
-2\) Identify gaps in our understanding
-
-3\) Identify stuff that needs to be included in the survey instrument.
-
-## The DAG
-
 ```{r packages}
 #| echo: false
 #| warning: false
-
 
 library(ggdag)
 library(ggplot2)
 theme_set(theme_dag())
 
 ```
+
+## Complaint DAG
+
+This document presents a DAG (Directed Acyclic Graph), of what happens before a consumer successfully submits a complaint. The complaint process is intended to survey a wide variety of issues that consumers  might encounter in their financial lives. 
+
+#### What is a dag. 
+
+In these diagrams an arrow indicates the direction of causation. Each circle (node) is a potential cause. For example, you could indicate how smoking causes cancer with a DAG.
+
+```{r}
+#| echo: false
+#| warning: false
+#| code-fold: true
+
+smoking <-  dagify(
+  cancer ~ tar
+  , tar ~ smoking
+  , smoking ~ gene
+  , cancer ~ gene
+  , smoking ~ peer_use
+  , cancer ~ pollution)
+
+ggdag(smoking, text = T,  text_size = 2.5) 
+
+```
+
+{{< pagebreak >}}
+
+## Goals
+
+1\) Develop a common understanding of, and language for the complaint process
+
+2\) Identify gaps in our understanding of the complaint process
+
+3\) Identify stuff that needs to be included in the survey instrument
+
+4\) Incorporate anything specific from the interviews we've been working on 
+
+{{< pagebreak >}}
+
+## The DAG
 
 ```{r dag_set}
 #| code-fold: true
@@ -93,8 +121,9 @@ complaining_dag <- dagify(
 
 ggdag(complaining_dag, text = FALSE, use_labels = "label", text_size = 3) 
 
-
 ```
+
+{{< pagebreak >}}
 
 ## Define the nodes
 
@@ -116,7 +145,7 @@ Unfortunate events
 
 Third party causes
 
-:   Merchant issues, criminal fraud, other financial institutions. A common example a furnisher can cause you to try to solve a problem with a Credit Reporting Company.
+:   Merchant issues, criminal fraud, other financial institutions. A common example is a furnisher can cause you to try to solve a problem with a Credit Reporting Company.
 
 Financial Communication
 
@@ -124,11 +153,11 @@ Financial Communication
 
 Legal Framework
 
-:   Your problem has a relationship to legal procedures and rights. Even if that relationship is, you don't have any rights.
+:   Your problem has a relationship to legal procedures and rights. Even if that relationship is that you don't have any rights in a given situation.
 
 Problem to solve
 
-:   The consumer is trying to fix a specific thing. Lots of different examples-- fees, confusion, data stuff, problems making payments, problems with specific transactions
+:   The consumer is trying to fix a specific thing. Lots of different examples--fees, confusion, data stuff, problems making payments, problems with specific transactions. 
 
 FI resolution
 
@@ -145,62 +174,3 @@ Intermediaries
 Search process
 
 :   This is captures difficulties in finding the correct person to complaint to. For the sake of this simple exercise I'm including the stuff that happens once the consumer lands on our submission form. If the consumer abandons their complaint, it's summarized here, although conceptually it might make more sense to break it out.
-
-## Data Simulation
-
-Is it worth trying to simulate some data from this process. There is a lot going on. Maybe starting with a stripped down version of the "main path" from financial situation, through legal framework, FI resolution, search and then submission?
-
-I think that we'd need to do some kid agent based simulation which feels potentially a lot of programming.
-
-------------------------------------------------------------------------
-
-## parking lot
-
-**Inciting incident**
-
--   financial institution errors
--   life events
--   financial mismanagement
--   third parties (fraud, financial abuse, merchant stuff)
-
-**Company behavior**
-
--   customer service
--   resolution direction (relief or no relief)
--   appropriateness of resolution (consumer is defrauded of a large sum, but only gets overdraft refunded)
--   quality of communication
--   non-customer service delays
--   company behavior is impacted by regulations
-
-**Consumer motivations to complaint**
-
--   monetary stakes
--   other stakes (stay in home)
--   voice (want to change the companies policy)
-    -   revenge - want to damage the company
-    -   justice - want the company to do the right thing
--   control information collection/sharing/use
-    -   consumer wants to control data and use of data
--   consumer understanding of legal rights
--   past experience complaining
--   perceived likelihood of success?
--   Self efficacy?
-
-**Consumer search**
-
--   internet search
--   social search
--   IRL social interaction
--   CFPB marketing
--   third parties and third party marketing (Credit repair, lawyer, etc)
-
-Consumer then weighs one or more options and determines which one fits with motivation?
-
-**Barriers to submission**
-
--   language
-    -   comprehension
-    -   fluency
--   time burden
--   context (landing pages, explanation)
--   Internet access
