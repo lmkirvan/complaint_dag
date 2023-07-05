@@ -16,13 +16,19 @@ theme_set(theme_dag())
 
 ```
 
-## Complaint DAG
+## Complaining Chart
 
-This document presents a DAG (Directed Acyclic Graph), of what happens before a consumer successfully submits a complaint. The complaint process is intended to survey a wide variety of issues that consumers  might encounter in their financial lives. 
+This document presents a DAG (Directed Acyclic Graph), of what happens before a consumer successfully submits a complaint. The complaint process is intended to survey a wide variety of issues that consumers might encounter in their financial lives, and to account for differences in how people make their way to the Bureau. But first...
 
-#### What is a dag. 
+#### What is a DAG.
 
-In these diagrams an arrow indicates the direction of causation. Each circle (node) is a potential cause. For example, you could indicate how smoking causes cancer with a DAG.
+A graph is a way of depicting relationships between things (which in graphese are called nodes and depicted as circles). Relationships between nodes are depicted with lines or arrows. There are lots of different kinds of graphs. You may have seen big complicated social networks depicted as graphs, for example.
+
+DAGS have two features that distinguish them from other graphs. They are **directed** (the lines between things are arrows with a direction) and they are **acyclic**--they don't contain cycles. This means that you can't follow the arrows in your graph to go backwards.[^1]
+
+[^1]: This is probably the most confusing thing about graphs. I find it helpful to arrange any DAG in time order. Sometimes the same thing is in your graph twice, but at 2 different time points. Introducing time can help you figure out how to make the graph without cycles.
+
+Here's a depiction of a simple graph for lung cancer:
 
 ```{r}
 #| echo: false
@@ -45,13 +51,15 @@ ggdag(smoking, text = T,  text_size = 2.5)
 
 ## Goals
 
+DAGS have lots of potential uses, but here we are using them because they are a simple structured way to think about the stuff that leads up to an outcome (here complaining). We'll use this graph to:
+
 1\) Develop a common understanding of, and language for the complaint process
 
 2\) Identify gaps in our understanding of the complaint process
 
 3\) Identify stuff that needs to be included in the survey instrument
 
-4\) Incorporate anything specific from the interviews we've been working on 
+4\) Incorporate anything specific from the interviews we've been working on
 
 {{< pagebreak >}}
 
@@ -125,7 +133,7 @@ ggdag(complaining_dag, text = FALSE, use_labels = "label", text_size = 3)
 
 {{< pagebreak >}}
 
-## Define the nodes
+## Definitions of Nodes
 
 FI Error
 
@@ -136,8 +144,6 @@ FI Error
 Financial Situation
 
 :   The consumers financial health. Can be a direct cause of problems through financial mismanagement.
-
-    **DATA:** FICO score, or financial well-being score
 
 Unfortunate events
 
@@ -157,7 +163,7 @@ Legal Framework
 
 Problem to solve
 
-:   The consumer is trying to fix a specific thing. Lots of different examples--fees, confusion, data stuff, problems making payments, problems with specific transactions. 
+:   The consumer is trying to fix a specific thing. Lots of different examples--fees, confusion, data stuff, problems making payments, problems with specific transactions.
 
 FI resolution
 
